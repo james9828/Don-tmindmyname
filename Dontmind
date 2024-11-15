@@ -1,0 +1,49 @@
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Enjoy", Text = "w = Enabled : p = Disabled."})
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- Settings
+bind = ""        -- Empty key binding for any future use
+bind2 = "w"      -- Key to increase size and enable effect
+bind3 = "p"      -- Key to reset size and disable effect
+
+-- Customizable settings for size, transparency, and color
+local largeSize = Vector3.new(30, 30, 30)
+local smallSize = Vector3.new(2, 2, 1)
+local largeTransparency = 0.7
+local smallTransparency = 1
+local largeColor = BrickColor.new("Bright red")
+local smallColor = BrickColor.new("Medium stone grey")
+
+-- State tracking for enabling/disabling effects
+_G.Disabled = false
+_G.HeadSize = 30
+
+-- Function to apply size and effects to other players
+local function applyEffect(size, transparency, color, material)
+    for i, v in next, game:GetService('Players'):GetPlayers() do
+        if v.Name ~= player.Name and v.Character then
+            local humanoidRootPart = v.Character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                pcall(function()
+                    humanoidRootPart.Size = size
+                    humanoidRootPart.Transparency = transparency
+                    humanoidRootPart.BrickColor = color
+                    humanoidRootPart.Material = material
+                    humanoidRootPart.CanCollide = false
+                end)
+            end
+        end
+    end
+end
+
+-- Script to handle key presses
+mouse.KeyDown:connect(function(key)
+    if key == bind2 then
+        _G.Disabled = true  -- Enable effect
+        applyEffect(largeSize, largeTransparency, largeColor, "Neon")
+    elseif key == bind3 then
+        _G.Disabled = false  -- Disable effect
+        applyEffect(smallSize, smallTransparency, smallColor, "Plastic")
+    end
+end)
